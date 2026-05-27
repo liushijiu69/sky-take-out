@@ -23,5 +23,7 @@ public class MessageConstant {
     public static final String DISH_BE_RELATED_BY_SETMEAL = "当前菜品关联了套餐,不能删除";
     public static final String ORDER_STATUS_ERROR = "订单状态错误";
     public static final String ORDER_NOT_FOUND = "订单不存在";
+    public static final String RESOURCE_NOT_FOUND = "访问的资源不存在!";
+    public static final String SERVER_ERROR = "服务器异常!";
 
 }

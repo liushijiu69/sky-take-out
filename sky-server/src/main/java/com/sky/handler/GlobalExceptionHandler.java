@@ -1,10 +1,12 @@
 package com.sky.handler;
 
+import com.sky.constant.MessageConstant;
 import com.sky.exception.BaseException;
 import com.sky.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * 全局异常处理器，处理项目中抛出的业务异常
@@ -24,9 +26,14 @@ public class GlobalExceptionHandler {
         return Result.error(ex.getMessage());
     }
     @ExceptionHandler
+    public Result exceptionHandler(NoResourceFoundException ex){
+        return Result.error(MessageConstant.RESOURCE_NOT_FOUND);
+    }
+    @ExceptionHandler
     public Result exceptionHandler(Exception ex){
         log.error("系统异常：{}", ex.getMessage());
-        return Result.error("服务器异常!");
+        log.error(ex.getMessage(), ex);
+        return Result.error(MessageConstant.SERVER_ERROR);
     }
 
 }

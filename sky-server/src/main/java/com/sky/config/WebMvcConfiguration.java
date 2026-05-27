@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -37,6 +38,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
      */
     @Bean
     public GroupedOpenApi adminApi() {
+        log.info("管理端接口文档");
         return GroupedOpenApi.builder()
                 .group("admin")
                 .displayName("管理端接口")
@@ -49,10 +51,12 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
      */
     @Bean
     public OpenAPI customOpenAPI() {
+        log.info("准备生成接口文档");
         return new OpenAPI()
                 .info(new Info()
                         .title("苍穹外卖项目接口文档")
                         .version("2.0")
                         .description("苍穹外卖项目接口文档"));
     }
+
 }
