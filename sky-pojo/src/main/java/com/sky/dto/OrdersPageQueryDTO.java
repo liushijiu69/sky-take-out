@@ -6,6 +6,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * 订单分页查询数据传递对象
+ */
 @Data
 public class OrdersPageQueryDTO implements Serializable {
 

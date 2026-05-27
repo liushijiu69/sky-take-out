@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * 订单支付返回数据
+ */
 @Data
 @Builder
 @NoArgsConstructor

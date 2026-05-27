@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 分类数据传递对象
+ */
 @Data
 public class CategoryDTO implements Serializable {
 

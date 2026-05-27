@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * 菜品项视图对象（用于订单中的菜品展示）
+ */
 @Data
 @Builder
 @NoArgsConstructor

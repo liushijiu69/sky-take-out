@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "sky.jwt")
+@ConfigurationProperties(prefix = "sky.jwt")//从sky-server/src/main/resources/application.yml加载配置项
 @Data
 public class JwtProperties {
 

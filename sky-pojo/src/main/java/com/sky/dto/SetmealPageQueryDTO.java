@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 套餐分页查询数据传递对象
+ */
 @Data
 public class SetmealPageQueryDTO implements Serializable {
 

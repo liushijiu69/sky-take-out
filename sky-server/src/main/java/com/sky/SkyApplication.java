@@ -5,8 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * 苍穹外卖项目启动类
+ */
 @SpringBootApplication
-@EnableTransactionManagement //开启注解方式的事务管理
+@EnableTransactionManagement
 @Slf4j
 public class SkyApplication {
     public static void main(String[] args) {

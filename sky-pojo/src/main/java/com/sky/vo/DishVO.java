@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 菜品视图对象（含分类名称和口味）
+ */
 @Data
 @Builder
 @NoArgsConstructor

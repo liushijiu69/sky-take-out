@@ -11,6 +11,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Web MVC 配置类，配置拦截器和接口文档
+ */
 @Configuration
 @Slf4j
 public class WebMvcConfiguration implements WebMvcConfigurer {
@@ -18,6 +21,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Autowired
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
 
+    /**
+     * 注册自定义拦截器，拦截 /admin/** 路径（登录接口除外）
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册自定义拦截器...");
@@ -26,6 +32,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns("/admin/employee/login");
     }
 
+    /**
+     * 管理端接口文档分组
+     */
     @Bean
     public GroupedOpenApi adminApi() {
         return GroupedOpenApi.builder()
@@ -35,6 +44,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .build();
     }
 
+    /**
+     * 自定义 OpenAPI 信息
+     */
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()

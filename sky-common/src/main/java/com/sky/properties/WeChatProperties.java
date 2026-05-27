@@ -1,10 +1,12 @@
 package com.sky.properties;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/**
+ * 微信支付配置属性类，从 application.yml 的 sky.wechat 前缀加载
+ */
 @Component
 @ConfigurationProperties(prefix = "sky.wechat")
 @Data

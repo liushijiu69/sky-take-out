@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 套餐数据传递对象
+ */
 @Data
 public class SetmealDTO implements Serializable {
 

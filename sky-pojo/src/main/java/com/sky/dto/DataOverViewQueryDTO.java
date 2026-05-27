@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * 数据概览查询数据传递对象
+ */
 @Data
 @Builder
 @NoArgsConstructor

@@ -3,6 +3,9 @@ package com.sky.dto;
 import lombok.Data;
 import java.io.Serializable;
 
+/**
+ * 订单支付数据传递对象
+ */
 @Data
 public class OrdersPaymentDTO implements Serializable {
     //订单号

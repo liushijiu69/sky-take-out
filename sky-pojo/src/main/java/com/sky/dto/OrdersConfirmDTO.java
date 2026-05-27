@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 订单确认数据传递对象
+ */
 @Data
 public class OrdersConfirmDTO implements Serializable {
 

@@ -6,9 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * 用户实体
+ */
 @Data
 @Builder
 @NoArgsConstructor

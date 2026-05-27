@@ -20,8 +20,13 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler
     public Result exceptionHandler(BaseException ex){
-        log.error("异常信息：{}", ex.getMessage());
+        log.warn("业务异常信息：{}", ex.getMessage());
         return Result.error(ex.getMessage());
+    }
+    @ExceptionHandler
+    public Result exceptionHandler(Exception ex){
+        log.error("系统异常：{}", ex.getMessage());
+        return Result.error("服务器异常!");
     }
 
 }
