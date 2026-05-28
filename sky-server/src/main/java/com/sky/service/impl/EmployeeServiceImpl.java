@@ -14,6 +14,7 @@ import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import com.sky.vo.EmployeeVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -195,6 +196,105 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .status(status)
                 .build();
         employeeMapper.update(employee);
+    }
+
+    @Override
+    public void updateEmployee(EmployeeDTO employeeDTO) {
+        //校验传入参数是否合规
+        if (employeeDTO.getId() == null
+                || employeeDTO.getIdNumber() == null
+                || employeeDTO.getName() == null
+                || employeeDTO.getPhone() == null
+                || employeeDTO.getSex() == null
+                || employeeDTO.getUsername() == null
+        ) {
+            throw new IllegalException(MessageConstant.ParamIllegal.PARAMETERS_ILLEGAL);
+        }
+
+        //校验身份证是否合规
+        if (employeeDTO.getIdNumber().length() != 18) {
+            throw new IllegalException(EmployeeConstant.ID_NUMBER
+                    + employeeDTO.getIdNumber()
+                    + MessageConstant.ParamIllegal.TO_LONG_OR_BLANK);
+        }
+
+        //校验姓名是否合规
+        if (employeeDTO.getName().length() > 32 || employeeDTO.getName().isEmpty()) {
+            throw new IllegalException(EmployeeConstant.NAME
+                    + employeeDTO.getName()
+                    + MessageConstant.ParamIllegal.TO_LONG_OR_BLANK);
+        }
+
+        //校验手机号是否合规
+        if (employeeDTO.getPhone().length() != 11) {
+            throw new IllegalException(EmployeeConstant.PHONE
+                    + employeeDTO.getPhone()
+                    + MessageConstant.ParamIllegal.TO_LONG_OR_BLANK);
+        }
+
+        //校验性别是否合规
+        if (!EmployeeConstant.Sex.contains(employeeDTO.getSex())) {
+            throw new IllegalException(EmployeeConstant.SEX
+                    + employeeDTO.getSex()
+                    + MessageConstant.ParamIllegal.NOT_IN_RANGE);
+        }
+
+        //校验账户是否合规
+        if (employeeDTO.getUsername().length() > 32 || employeeDTO.getUsername().isEmpty()) {
+            throw new IllegalException(EmployeeConstant.USERNAME
+                    + employeeDTO.getUsername()
+                    + MessageConstant.ParamIllegal.TO_LONG_OR_BLANK);
+        }
+        Employee emp = employeeMapper.getByUsername(employeeDTO.getUsername());
+        if (emp != null && !emp.getId().equals(employeeDTO.getId())) {
+            //账号已存在,不得重复
+            throw new AlreadyExistedException(EmployeeConstant.USERNAME
+                    + employeeDTO.getUsername()
+                    + MessageConstant.ParamIllegal.ALREADY_EXISTED
+            );
+        }
+        //校验通过,更新数据库
+        Employee employee = Employee.builder()
+                .id(employeeDTO.getId())
+                .username(employeeDTO.getUsername())
+                .name(employeeDTO.getName())
+                .phone(employeeDTO.getPhone())
+                .sex(employeeDTO.getSex())
+                .idNumber(employeeDTO.getIdNumber())
+                .updateTime(LocalDateTime.now())
+                .updateUser(BaseContext.getCurrentId())
+                .build();
+        employeeMapper.update(employee);
+    }
+
+    @Override
+    public EmployeeVO getById(Long id) {
+        //校验参数
+        if (id == null) {
+            throw new IllegalException(MessageConstant.ParamIllegal.PARAMETERS_ILLEGAL);
+        }
+        //查询数据库
+        Employee employee = employeeMapper.getById(id);
+        if (employee == null) {
+            //员工不存在
+            throw new AccountNotFoundException(MessageConstant.LoginError.ACCOUNT_NOT_FOUND);
+        }
+        //转换为vo返回
+        EmployeeVO employeeVO = EmployeeVO.builder()
+                .id(employee.getId())
+                .idNumber(employee.getIdNumber())
+                .name(employee.getName())
+                .password("******")
+                .phone(employee.getPhone())
+                .sex(employee.getSex())
+                .status(employee.getStatus())
+                .username(employee.getUsername())
+                .createTime(employee.getCreateTime())
+                .updateTime(employee.getUpdateTime())
+                .createUser(employee.getCreateUser())
+                .updateUser(employee.getUpdateUser())
+                .build();
+        return employeeVO;
     }
 
 }

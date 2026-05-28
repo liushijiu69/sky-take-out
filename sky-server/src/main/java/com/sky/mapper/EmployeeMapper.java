@@ -5,7 +5,6 @@ import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.vo.EmployeeVO;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 
 /**
  * 员工数据访问层
@@ -13,12 +12,6 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface EmployeeMapper {
 
-    /**
-     * 根据用户名查询员工
-     * @param username
-     * @return
-     */
-    @Select("select * from employee where username = #{username}")
     Employee getByUsername(String username);
 
     void insertEmployee(Employee employee);
@@ -26,6 +19,8 @@ public interface EmployeeMapper {
     Integer selectOne(String username);
 
     Page<EmployeeVO> selectByPage(EmployeePageQueryDTO empPageQueryDTO);
+
+    Employee getById(Long id);
 
     void update(Employee employee);
 }

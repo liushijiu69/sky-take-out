@@ -6,6 +6,7 @@ import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
+import com.sky.vo.EmployeeVO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.EmployeeService;
@@ -71,6 +72,9 @@ public class EmployeeController {
         return Result.success();
     }
 
+    /**
+     * 新增员工
+     */
     @Operation(summary = "新增员工")
     @PostMapping
     public Result<String> postEmployee(@RequestBody EmployeeDTO employeeDTO) {
@@ -79,6 +83,9 @@ public class EmployeeController {
         return Result.success();
     }
 
+    /**
+     * 员工分页查询
+     */
     @Operation(summary = "员工分页查询")
     @GetMapping("/page")
     public Result<PageResult> getEmployeesPage(EmployeePageQueryDTO empPageQueryDTO) {
@@ -87,11 +94,36 @@ public class EmployeeController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 启用或禁用员工账号
+     */
     @Operation(summary = "启用或禁用员工")
     @PostMapping("/status/{status}")
     public Result<String> postEmployeeAccountStatus(@PathVariable Integer status,@RequestParam Long id) {
         log.info("启用或禁用员工,参数为: status:{},id:{}", status,id);
         employeeService.startOrStopEmpAccount(status,id);
         return Result.success();
+    }
+
+    /**
+     * 修改员工信息
+     */
+    @Operation(summary = "修改员工")
+    @PutMapping
+    public Result<String> putEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("修改员工,参数为: {}", employeeDTO);
+        employeeService.updateEmployee(employeeDTO);
+        return Result.success();
+    }
+
+    /**
+     * 根据id查询员工
+     */
+    @Operation(summary = "根据id查询员工")
+    @GetMapping("/{id}")
+    public Result<EmployeeVO> getEmployeeById(@PathVariable Long id) {
+        log.info("根据id查询员工,id: {}", id);
+        EmployeeVO employeeVO = employeeService.getById(id);
+        return Result.success(employeeVO);
     }
 }
