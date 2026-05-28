@@ -32,7 +32,9 @@ public class Employee implements Serializable {
     private String sex;
 
     private String idNumber;
-
+    /**
+     * 1:正常 0:锁定
+     */
     private Integer status;
 
     //@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
