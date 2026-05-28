@@ -14,9 +14,9 @@ public class EmployeePageQueryDTO implements Serializable {
     private String name;
 
     //页码
-    private int page;
+    private Integer page;
 
     //每页显示记录数
-    private int pageSize;
+    private Integer pageSize;
 
 }

@@ -3,8 +3,10 @@ package com.sky.controller.admin;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
@@ -13,10 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +40,7 @@ public class EmployeeController {
     @Operation(summary = "员工登录")
     @PostMapping("/login")
     public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
-        log.info("员工登录：{}", employeeLoginDTO);
+        log.info("员工登录,参数为：{}", employeeLoginDTO);
 
         Employee employee = employeeService.login(employeeLoginDTO);
 
@@ -75,9 +74,17 @@ public class EmployeeController {
     @Operation(summary = "新增员工")
     @PostMapping
     public Result<String> postEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        log.info("新增员工: {}", employeeDTO);
+        log.info("新增员工,参数为: {}", employeeDTO);
         employeeService.saveEmployee(employeeDTO);
         return Result.success();
+    }
+
+    @Operation(summary = "员工分页查询")
+    @GetMapping("/page")
+    public Result<PageResult> getEmployeesPage(EmployeePageQueryDTO empPageQueryDTO) {
+        log.info("员工分页查询,参数为: {}", empPageQueryDTO);
+        PageResult pageResult = employeeService.queryEmployeeByPage(empPageQueryDTO);
+        return Result.success(pageResult);
     }
 
 }

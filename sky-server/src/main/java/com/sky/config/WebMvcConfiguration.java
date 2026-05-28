@@ -1,6 +1,7 @@
 package com.sky.config;
 
 import com.sky.interceptor.JwtTokenAdminInterceptor;
+import com.sky.json.JacksonObjectMapper;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import lombok.extern.slf4j.Slf4j;
@@ -8,9 +9,13 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 /**
  * Web MVC 配置类，配置拦截器和接口文档
@@ -59,4 +64,17 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                         .description("苍穹外卖项目接口文档"));
     }
 
+    /**
+     * 扩展Spring MVC框架的消息转换器
+     * @param converters the list of configured converters to be extended
+     */
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        //创建消息转换器
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        //为消息转换器设置一个对象转换器,可以将java对象序列化为json数据
+        converter.setObjectMapper(new JacksonObjectMapper());
+        //将自己的消息转换器加入容器中,0表示把顺序提到最前,优先使用自定的消息转换器
+        converters.add(0,converter);
+    }
 }

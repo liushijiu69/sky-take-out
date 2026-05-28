@@ -27,13 +27,13 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler
     public Result exceptionHandler(NoResourceFoundException ex){
-        return Result.error(MessageConstant.RESOURCE_NOT_FOUND);
+        return Result.error(MessageConstant.ServerError.RESOURCE_NOT_FOUND);
     }
     @ExceptionHandler
     public Result exceptionHandler(Exception ex){
         log.error("系统异常：{}", ex.getMessage());
         log.error(ex.getMessage(), ex);
-        return Result.error(MessageConstant.SERVER_ERROR);
+        return Result.error(MessageConstant.ServerError.SERVER_ERROR);
     }
 
 }
