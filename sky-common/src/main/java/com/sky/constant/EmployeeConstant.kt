@@ -7,6 +7,7 @@ object EmployeeConstant {
      const val PHONE: String = "电话"
      const val SEX: String = "性别"
      const val PASSWORD: String = "密码"
+     const val STATUS: String = "状态"
      /**
       * 默认密码
       */
@@ -14,16 +15,13 @@ object EmployeeConstant {
      /**
       * 状态
       */
-     object Status{
-          /**
-           * 启用
-           */
-          const val ENABLE = 1
-
-          /**
-           * 禁用
-           */
-          const val DISABLE = 0
+     enum class Status(val value: Int) {
+          ENABLE(1),DISABLE (0);
+          companion object {
+               @JvmStatic
+               fun contains(v: Int): Boolean =
+                    entries.any { it.value == v }
+          }
      }
 
      /**

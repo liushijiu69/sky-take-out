@@ -8,6 +8,21 @@
         values
         (#{name}, #{username},#{password}, #{phone},#{sex}, #{idNumber},#{status}, #{createTime},#{updateTime}, #{createUser},#{updateUser})
     </insert>
+    <update id="update">
+        update employee
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="username != null">username = #{username},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="idNumber != null">id_number = #{idNumber},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+        </set>
+        where id = #{id}
+    </update>
     <select id="selectOne" resultType="java.lang.Integer">
         SELECT 1 FROM employee WHERE username = #{username} LIMIT 1
     </select>

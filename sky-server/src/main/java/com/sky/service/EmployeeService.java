@@ -22,4 +22,5 @@ public interface EmployeeService {
 
     PageResult queryEmployeeByPage(EmployeePageQueryDTO empPageQueryDTO);
 
+    void startOrStopEmpAccount(Integer status, Long id);
 }

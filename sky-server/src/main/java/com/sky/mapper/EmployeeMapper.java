@@ -26,4 +26,6 @@ public interface EmployeeMapper {
     Integer selectOne(String username);
 
     Page<EmployeeVO> selectByPage(EmployeePageQueryDTO empPageQueryDTO);
+
+    void update(Employee employee);
 }

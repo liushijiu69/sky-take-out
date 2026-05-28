@@ -72,7 +72,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new PasswordErrorException(MessageConstant.LoginError.PASSWORD_ERROR);
         }
 
-        if (employee.getStatus() == EmployeeConstant.Status.DISABLE) {
+        if (employee.getStatus() == EmployeeConstant.Status.DISABLE.getValue()) {
             //账号被锁定
             throw new AccountLockedException(MessageConstant.LoginError.ACCOUNT_LOCKED);
         }
@@ -149,7 +149,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .idNumber(employeeDTO.getIdNumber())
                 // 为缺失字段设置默认值
                 .password(DigestUtils.md5DigestAsHex(EmployeeConstant.DEFAULT_PASSWORD.getBytes()))
-                .status(EmployeeConstant.Status.ENABLE)
+                .status(EmployeeConstant.Status.ENABLE.getValue())
                 // 设置当前记录的创建时间和修改时间
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
@@ -177,6 +177,24 @@ public class EmployeeServiceImpl implements EmployeeService {
         long total = result.getTotal();
         List<EmployeeVO> record = result.getResult();
         return new PageResult(total,record);
+    }
+
+    @Override
+    public void startOrStopEmpAccount(Integer status, Long id) {
+        //校验参数
+        if (status==null || id==null) throw new IllegalException(MessageConstant.ParamIllegal.PARAMETERS_ILLEGAL);
+        if (!EmployeeConstant.Status.contains(status)) {
+            throw new IllegalException(EmployeeConstant.STATUS
+                    + status
+                    + MessageConstant.ParamIllegal.NOT_IN_RANGE
+            );
+        }
+        //校验完成,更新数据库
+        Employee employee = Employee.builder()
+                .id(id)
+                .status(status)
+                .build();
+        employeeMapper.update(employee);
     }
 
 }
