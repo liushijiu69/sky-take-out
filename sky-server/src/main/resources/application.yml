@@ -29,6 +29,11 @@ logging:
         controller: info
 
 sky:
+  alioss:
+    endpoint: ${sky.alioss.endpoint}
+    access-key-id: ${sky.alioss.access-key-id}
+    access-key-secret: ${sky.alioss.access-key-secret}
+    bucket-name: ${sky.alioss.bucket-name}
   jwt:
     # 设置jwt签名加密时使用的秘钥
     admin-secret-key: liushijiu_sky-take-out-project-2026

@@ -9,6 +9,13 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import java.io.ByteArrayInputStream;
 
+/**
+ * 阿里云 OSS 工具类
+ * <p>
+ * accessKeyId 和 accessKeySecret 通过配置类从 application.yml 获取，
+ * application.yml 中通过 ${OSS_ACCESS_KEY_ID} / ${OSS_ACCESS_KEY_SECRET} 占位符读取环境变量。
+ * </p>
+ */
 @Data
 @AllArgsConstructor
 @Slf4j
@@ -22,47 +29,45 @@ public class AliOssUtil {
     /**
      * 文件上传
      *
-     * @param bytes
-     * @param objectName
-     * @return
+     * @param bytes      文件字节数组
+     * @param objectName 对象完整路径（不包含 Bucket 名称）
+     * @return 文件访问 URL，上传失败返回 null
      */
     public String upload(byte[] bytes, String objectName) {
-
-        // 创建OSSClient实例。
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-
+        OSS ossClient = null;
         try {
-            // 创建PutObject请求。
+            // 创建 OSSClient 实例
+            ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+            // 上传文件
             ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(bytes));
+
+            // 文件访问路径规则 https://BucketName.Endpoint/ObjectName
+            String url = new StringBuilder("https://")
+                    .append(bucketName)
+                    .append(".")
+                    .append(endpoint)
+                    .append("/")
+                    .append(objectName)
+                    .toString();
+
+            log.info("文件上传到:{}", url);
+            return url;
+
         } catch (OSSException oe) {
-            System.out.println("Caught an OSSException, which means your request made it to OSS, "
-                    + "but was rejected with an error response for some reason.");
-            System.out.println("Error Message:" + oe.getErrorMessage());
-            System.out.println("Error Code:" + oe.getErrorCode());
-            System.out.println("Request ID:" + oe.getRequestId());
-            System.out.println("Host ID:" + oe.getHostId());
+            log.error("OSS 上传失败，请求被服务端拒绝: ErrorMessage={} ErrorCode={} RequestId={} HostId={}",
+                    oe.getErrorMessage(), oe.getErrorCode(), oe.getRequestId(), oe.getHostId());
+            return null;
         } catch (ClientException ce) {
-            System.out.println("Caught an ClientException, which means the client encountered "
-                    + "a serious internal problem while trying to communicate with OSS, "
-                    + "such as not being able to access the network.");
-            System.out.println("Error Message:" + ce.getMessage());
+            log.error("OSS 客户端异常，无法访问网络或凭证错误: {}", ce.getMessage(), ce);
+            return null;
+        } catch (Exception e) {
+            log.error("OSS 上传发生未知异常: {}", e.getMessage(), e);
+            return null;
         } finally {
             if (ossClient != null) {
                 ossClient.shutdown();
             }
         }
-
-        //文件访问路径规则 https://BucketName.Endpoint/ObjectName
-        StringBuilder stringBuilder = new StringBuilder("https://");
-        stringBuilder
-                .append(bucketName)
-                .append(".")
-                .append(endpoint)
-                .append("/")
-                .append(objectName);
-
-        log.info("文件上传到:{}", stringBuilder.toString());
-
-        return stringBuilder.toString();
     }
 }

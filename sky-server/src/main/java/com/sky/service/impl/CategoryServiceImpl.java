@@ -63,7 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
         BeanUtils.copyProperties(categoryDTO, category);
 
         //分类状态默认为禁用状态0
-        category.setStatus(CategoryConstant.Status.DISABLE.getValue());
+        category.setStatus(CategoryConstant.Status.DISABLE.getCode());
 
 //        //设置创建时间、修改时间、创建人、修改人
 //        category.setCreateTime(LocalDateTime.now());

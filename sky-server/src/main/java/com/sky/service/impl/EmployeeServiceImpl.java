@@ -73,7 +73,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new PasswordErrorException(MessageConstant.LoginError.PASSWORD_ERROR);
         }
 
-        if (employee.getStatus() == EmployeeConstant.Status.DISABLE.getValue()) {
+        if (employee.getStatus() == EmployeeConstant.Status.DISABLE.getCode()) {
             //账号被锁定
             throw new AccountLockedException(MessageConstant.LoginError.ACCOUNT_LOCKED);
         }
@@ -150,7 +150,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .idNumber(employeeDTO.getIdNumber())
                 // 为缺失字段设置默认值
                 .password(DigestUtils.md5DigestAsHex(EmployeeConstant.DEFAULT_PASSWORD.getBytes()))
-                .status(EmployeeConstant.Status.ENABLE.getValue())
+                .status(EmployeeConstant.Status.ENABLE.getCode())
 //                // 设置当前记录的创建时间和修改时间
 //                .createTime(LocalDateTime.now())
 //                .updateTime(LocalDateTime.now())

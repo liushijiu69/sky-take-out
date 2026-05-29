@@ -24,47 +24,47 @@ object CategoryConstant {
      /**
       * 分类类型枚举
       */
-     enum class Type(val value: Int) {
-          /**
-           * 菜品分类
-           */
-          DISH(1),
+      enum class Type(val code: Int, val desc: String) {
+           /**
+            * 菜品分类
+            */
+           DISH(1, "菜品分类"),
 
-          /**
-           * 套餐分类
-           */
-          SETMEAL(2);
+           /**
+            * 套餐分类
+            */
+           SETMEAL(2, "套餐分类");
 
-          companion object {
-               /**
-                * 判断值是否合法
-                */
-               @JvmStatic
-               fun contains(v: Int): Boolean =
-                    entries.any { it.value == v }
-          }
-     }
+           companion object {
+                /**
+                 * 判断值是否合法
+                 */
+                @JvmStatic
+                fun contains(v: Int): Boolean =
+                     entries.any { it.code == v }
+           }
+      }
 
-     /**
-      * 分类状态枚举
-      */
-     enum class Status(val value: Int) {
-          /**
-           * 启用
-           */
-          ENABLE(1),
-          /**
-           * 禁用
-           */
-          DISABLE(0);
+      /**
+       * 分类状态枚举
+       */
+      enum class Status(val code: Int, val desc: String) {
+           /**
+            * 启用
+            */
+           ENABLE(1, "启用"),
+           /**
+            * 禁用
+            */
+           DISABLE(0, "禁用");
 
-          companion object {
-               /**
-                * 判断值是否合法
-                */
-               @JvmStatic
-               fun contains(v: Int): Boolean =
-                    entries.any { it.value == v }
-          }
-     }
+           companion object {
+                /**
+                 * 判断值是否合法
+                 */
+                @JvmStatic
+                fun contains(v: Int): Boolean =
+                     entries.any { it.code == v }
+           }
+      }
 }

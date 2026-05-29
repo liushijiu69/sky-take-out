@@ -8,15 +8,17 @@ public class MessageConstant {
      * 参数不符合要求
      */
     public static class ParamIllegal {
-        public static final String TO_LONG_OR_BLANK = "不符合要求: 太长或为空!";
-        public static final String PARAMETERS_ILLEGAL = "不符合要求: 必填参数为空或参数非法!";
-        public static final String ALREADY_EXISTED = "不符合要求: 已存在!";
-        public static final String NOT_IN_RANGE = "不符合要求: 参数不在指定范围!";
+        public static final String TO_LONG_OR_BLANK = "参数不符合要求: 太长或为空!";
+        public static final String PARAMETERS_ILLEGAL = "参数不符合要求: 必填参数为空或参数有问题!";
+        public static final String ALREADY_EXISTED = "参数不符合要求: 已存在!";
+        public static final String NOT_IN_RANGE = "参数不符合要求: 参数不在指定范围!";
+        public static final String FILE_HAS_NO_ORIGINAL_NAME = "参数不符合要求: 上传的文件没有filename字段!";
     }
     public static class ServerError {
         public static final String RESOURCE_NOT_FOUND = "访问的资源不存在!";
         public static final String SERVER_ERROR = "服务器异常!";
         public static final String UNKNOWN_ERROR = "未知错误";
+        public static final String File_UPLOAD_ERROR = "文件上传失败";
     }
     public static class LoginError {
         public static final String PASSWORD_ERROR = "密码错误";
