@@ -36,12 +36,29 @@ Service(出参 VO) → Controller → 前端 JSON
 
 ## Service 层规范
 
-- 数据校验规则依据 `docs/数据库设计文档.md`（字段长度/约束）和 `docs/苍穹外卖-管理端接口.md`（必填/可选）
+### 数据校验
+
+- 校验规则依据 `docs/数据库设计文档.md`（字段长度/约束）和 `docs/苍穹外卖-管理端接口.md`（必填/可选）
 - 校验模式：
   1. 必填字段非空检查 → `throw IllegalException(MessageConstant.ParamIllegal.PARAMETERS_ILLEGAL)`
   2. 单个字段格式/范围检查 → `throw IllegalException(常量名 + MessageConstant.ParamIllegal.TO_LONG_OR_BLANK/NOT_IN_RANGE)`
 - 字段提示常量定义在 `sky-common/.../constant/` 下，使用 Kotlin `object`
-- 取值有限的变量（如 status 0/1、类型枚举等）在对应的 Constant 中用 `enum class` 定义，不写魔法数字
+- 取值有限的变量（如 status 0/1、类型枚举等）在对应的 Constant 中用 `enum class(val code: Int, val desc: String)` 定义，不写魔法数字
+
+### 多表写操作
+
+- 涉及多表修改的方法必须加 `@Transactional`
+- 批量删除流程：校验业务约束 → 删子表数据 → 删主表数据
+
+### VO 组装
+
+- Mapper 层只返回 Entity，不返回 VO
+- Service 层通过 `BeanUtils.copyProperties(entity, vo)` + 手动设置额外字段来组装 VO
+
+### 文档注释
+
+- 方法写 `/** 方法说明 + 分步骤中文说明业务逻辑 */`
+- 方法体内每步用 `// 步骤说明` 标注
 
 ## 分页查询
 
@@ -57,8 +74,42 @@ return PageResult(page.total, page.result)
 |---|---|
 | 动态条件 | `<where>` + `<if test="...">` |
 | 模糊查询 | `like concat('%', #{name}, '%')` |
-| 连表 | `left join category c on d.category_id = c.id`，别名映射到 VO |
-| resultType | 写全限定类名（如 `com.sky.vo.DishVO`） |
+| 批量操作 | `<foreach collection="..." item="..." open="(" separator="," close=")">` |
+| resultType | 写全限定类名（如 `com.sky.entity.Dish`） |
+| 查所有列 | **禁用 `select *`**，必须显式列出所有列名 |
+| update | 用 `<set>` + `<if>` 实现动态更新 |
+| insert 返回主键 | `useGeneratedKeys="true" keyProperty="id"` |
+
+## Mapper 层规范
+
+### 接口
+
+- **返回值类型必须是 Entity，不是 VO**（VO 在 Service 组装）
+- 新增/修改方法标注 `@AutoFill`
+  - insert → `@AutoFill(AutoFill.OperationType.INSERT)`
+  - update → `@AutoFill(AutoFill.OperationType.UPDATE)`
+- `@Select` 注解仅用于极简查询，复杂 SQL 统一写在 XML
+
+### XML
+
+- 每个 SQL 块上方写 `<!-- 方法说明 -->`
+- 不要有未使用的 `<if>`、`<set>` 等标签
+
+## 枚举类定义
+
+取值有限的变量在对应 Constant 中用 Kotlin `enum class` 定义：
+
+```kotlin
+enum class Status(val code: Int, val desc: String) {
+    ENABLE(1, "启用"),
+    DISABLE(0, "禁用");
+    companion object {
+        fun contains(v: Int): Boolean = entries.any { it.code == v }
+    }
+}
+```
+
+引用时用 `.code` 获取原始值，用 `.desc` 获取中文描述。Java 调用方用 `.getCode()` / `.getDesc()`。
 
 ## 文档注释规范
 

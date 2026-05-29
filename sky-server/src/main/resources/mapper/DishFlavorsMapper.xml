@@ -14,4 +14,9 @@
             #{id}
         </foreach>
     </delete>
+
+    <!-- 根据菜品id查询口味列表 -->
+    <select id="selectByDishId" resultType="com.sky.entity.DishFlavor">
+        select id, dish_id, name, value from dish_flavor where dish_id = #{dishId}
+    </select>
 </mapper>

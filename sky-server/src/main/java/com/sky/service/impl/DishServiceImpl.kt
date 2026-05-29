@@ -1,6 +1,5 @@
 package com.sky.service.impl
 
-import com.github.pagehelper.Page
 import com.github.pagehelper.PageHelper
 import com.sky.constant.DishConstant
 import com.sky.constant.MessageConstant
@@ -9,6 +8,7 @@ import com.sky.dto.DishPageQueryDTO
 import com.sky.entity.Dish
 import com.sky.exception.DeletionNotAllowedException
 import com.sky.exception.IllegalException
+import com.sky.mapper.CategoryMapper
 import com.sky.mapper.DishFlavorsMapper
 import com.sky.mapper.DishMapper
 import com.sky.mapper.SetmealMapper
@@ -25,6 +25,7 @@ class DishServiceImpl(
     private val dishMapper: DishMapper,
     private val dishFlavorsMapper: DishFlavorsMapper,
     private val setmealMapper: SetmealMapper,
+    private val categoryMapper: CategoryMapper,
 ) : DishService {
     private val log = LoggerFactory.getLogger(DishServiceImpl::class.java)
 
@@ -89,6 +90,99 @@ class DishServiceImpl(
             dishFlavorsMapper.insertBatch(flavors)
         }
 
+    }
+
+    /**
+     * 根据id查询菜品
+     * 1. 校验参数
+     * 2. 查询dish表
+     * 3. 查询category表获取分类名称
+     * 4. 查询flavor表
+     * 5. 组装DishVO并返回
+     */
+    override fun getById(id: Long): DishVO {
+        // 1. 校验参数
+        if (id <= 0) {
+            throw IllegalException(MessageConstant.ParamIllegal.PARAMETERS_ILLEGAL)
+        }
+        // 2. 查询dish表
+        val dish = dishMapper.selectById(id)
+            ?: throw IllegalException(MessageConstant.ServerError.RESOURCE_NOT_FOUND)
+        // 3. 查询category表获取分类名称
+        val categoryName = categoryMapper.selectById(dish.categoryId)?.name
+        // 4. 查询flavor表
+        val flavors = dishFlavorsMapper.selectByDishId(id)
+        // 5. 组装DishVO
+        val dishVO = DishVO()
+        BeanUtils.copyProperties(dish, dishVO)
+        dishVO.categoryName = categoryName
+        dishVO.flavors = flavors
+        return dishVO
+    }
+
+    /**
+     * 修改菜品（含口味）
+     * 1. 校验参数
+     * 2. flavors不为空 → 校验flavors → 删除原口味 → 插入新口味
+     * 3. flavors为空 → 跳过flavors处理
+     * 4. 修改dish
+     */
+    @Transactional
+    override fun updateWithFlavor(dishDTO: DishDTO) {
+        // 1. 校验参数
+        if (dishDTO.id == null || dishDTO.name == null || dishDTO.categoryId == null
+            || dishDTO.price == null || dishDTO.image == null) {
+            throw IllegalException(MessageConstant.ParamIllegal.PARAMETERS_ILLEGAL)
+        }
+        if (dishDTO.name.length > 32 || dishDTO.name.isEmpty()) {
+            throw IllegalException(DishConstant.NAME + MessageConstant.ParamIllegal.TO_LONG_OR_BLANK)
+        }
+        if (dishDTO.price < java.math.BigDecimal.ZERO) {
+            throw IllegalException(DishConstant.PRICE + MessageConstant.ParamIllegal.NOT_IN_RANGE)
+        }
+        // 2. flavors不为空 → 校验、删除原口味、插入新口味
+        val flavors = dishDTO.flavors
+        if (flavors != null && flavors.isNotEmpty()) {
+            // 校验每个flavor的必填字段
+            flavors.forEach {
+                if (it.name == null || it.value == null) {
+                    throw IllegalException(MessageConstant.ParamIllegal.PARAMETERS_ILLEGAL)
+                }
+            }
+            // 删除原口味
+            dishFlavorsMapper.deleteByDishIds(listOf(dishDTO.id))
+            // 插入新口味
+            flavors.forEach { it.dishId = dishDTO.id }
+            dishFlavorsMapper.insertBatch(flavors)
+        }
+        // 3. flavors为空 → 跳过（不做任何口味操作）
+
+        // 4. 修改dish
+        val dish = Dish()
+        BeanUtils.copyProperties(dishDTO, dish)
+        dishMapper.update(dish)
+    }
+
+    /**
+     * 菜品起售、停售
+     * 1. 校验状态值是否合法
+     * 2. 校验菜品id
+     * 3. 构造Dish对象并调用已有update方法
+     */
+    override fun startOrStop(status: Int, id: Long) {
+        // 1. 校验状态值是否合法(0停售 1起售)
+        if (!DishConstant.DishStatus.contains(status)) {
+            throw IllegalException(DishConstant.STATUS + MessageConstant.ParamIllegal.NOT_IN_RANGE)
+        }
+        // 2. 校验菜品id
+        if (id <= 0) {
+            throw IllegalException(MessageConstant.ParamIllegal.PARAMETERS_ILLEGAL)
+        }
+        // 3. 构造Dish对象并更新
+        val dish = Dish()
+        dish.id = id
+        dish.status = status
+        dishMapper.update(dish)
     }
 
     override fun pageQuery(dishPageQueryDTO: DishPageQueryDTO): PageResult {

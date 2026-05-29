@@ -46,4 +46,11 @@ public interface CategoryMapper {
      * @return
      */
     List<Category> list(Integer type);
+
+    /**
+     * 根据id查询分类
+     * @param id 分类id
+     * @return 分类实体
+     */
+    Category selectById(Long id);
 }
