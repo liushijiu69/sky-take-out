@@ -151,12 +151,12 @@ public class EmployeeServiceImpl implements EmployeeService {
                 // 为缺失字段设置默认值
                 .password(DigestUtils.md5DigestAsHex(EmployeeConstant.DEFAULT_PASSWORD.getBytes()))
                 .status(EmployeeConstant.Status.ENABLE.getValue())
-                // 设置当前记录的创建时间和修改时间
-                .createTime(LocalDateTime.now())
-                .updateTime(LocalDateTime.now())
-                // 设置当前记录创建人id和修改人id
-                .createUser(BaseContext.getCurrentId())
-                .updateUser(BaseContext.getCurrentId())
+//                // 设置当前记录的创建时间和修改时间
+//                .createTime(LocalDateTime.now())
+//                .updateTime(LocalDateTime.now())
+//                // 设置当前记录创建人id和修改人id
+//                .createUser(BaseContext.getCurrentId())
+//                .updateUser(BaseContext.getCurrentId())
                 .build();
         employeeMapper.insertEmployee(employee);
     }
@@ -261,8 +261,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .phone(employeeDTO.getPhone())
                 .sex(employeeDTO.getSex())
                 .idNumber(employeeDTO.getIdNumber())
-                .updateTime(LocalDateTime.now())
-                .updateUser(BaseContext.getCurrentId())
+//                .updateTime(LocalDateTime.now())
+//                .updateUser(BaseContext.getCurrentId())
                 .build();
         employeeMapper.update(employee);
     }
