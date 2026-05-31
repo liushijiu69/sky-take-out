@@ -21,6 +21,20 @@ public interface DishMapper {
     @Select("select count(id) from dish where category_id = #{categoryId}")
     Integer countByCategoryId(Long categoryId);
 
+    /**
+     * 根据id集合统计菜品数量
+     * @param ids 菜品id集合
+     * @return 存在的菜品数量
+     */
+    Integer countByIds(@Param("ids") List<Long> ids);
+
+    /**
+     * 根据分类id查询菜品列表
+     * @param categoryId 分类id
+     * @return 菜品列表
+     */
+    List<Dish> selectByCategoryId(Long categoryId);
+
     @AutoFill(AutoFill.OperationType.INSERT)
     void insert(Dish dish);
 

@@ -6,6 +6,11 @@ sky:
     database: sky_take_out
     username: liushijiu
     password: liushijiu69
+  redis:
+    port: 6379
+    database: 2
+    host: localhost
+#    password:
   alioss:
     endpoint: oss-cn-beijing.aliyuncs.com
     bucket-name: sky-take-out-liushijiu

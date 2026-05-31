@@ -185,6 +185,20 @@ class DishServiceImpl(
         dishMapper.update(dish)
     }
 
+    /**
+     * 根据分类id查询菜品列表
+     * 1. 校验categoryId
+     * 2. 调用mapper查询
+     */
+    override fun listByCategoryId(categoryId: Long): List<Dish> {
+        // 1. 校验categoryId
+        if (categoryId <= 0) {
+            throw IllegalException(MessageConstant.ParamIllegal.PARAMETERS_ILLEGAL)
+        }
+        // 2. 查询并返回
+        return dishMapper.selectByCategoryId(categoryId)
+    }
+
     override fun pageQuery(dishPageQueryDTO: DishPageQueryDTO): PageResult {
         //校验参数
         if (dishPageQueryDTO.page <= 0 || dishPageQueryDTO.pageSize <= 0) {

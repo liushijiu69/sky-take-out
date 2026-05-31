@@ -39,6 +39,9 @@ public class Setmeal implements Serializable {
     //图片
     private String image;
 
+    //分类名称（非DB字段，用于SQL映射）
+    private String categoryName;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration
 class OssConfiguration {
-    val log = LoggerFactory.getLogger(OssConfiguration::class.java)
+    private val log = LoggerFactory.getLogger(OssConfiguration::class.java)
     @Bean
     @ConditionalOnMissingBean
     fun aliOssUtil(aop: AliOssProperties): AliOssUtil{

@@ -2,6 +2,7 @@ package com.sky.controller.admin
 
 import com.sky.dto.DishDTO
 import com.sky.dto.DishPageQueryDTO
+import com.sky.entity.Dish
 import com.sky.result.PageResult
 import com.sky.result.Result
 import com.sky.service.DishService
@@ -40,6 +41,13 @@ class DishController(
         log.info("菜品分页查询,参数:${dishPageQueryDTO}")
         val pageResult = dishService.pageQuery(dishPageQueryDTO)
         return Result.success(pageResult)
+    }
+
+    @Operation(summary = "根据分类id查询菜品")
+    @GetMapping("/list")
+    fun list(@RequestParam categoryId: Long): Result<List<Dish>> {
+        log.info("根据分类id查询菜品,categoryId:${categoryId}")
+        return Result.success(dishService.listByCategoryId(categoryId))
     }
 
     /**
