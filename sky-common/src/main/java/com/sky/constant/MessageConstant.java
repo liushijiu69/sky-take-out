@@ -11,7 +11,7 @@ public class MessageConstant {
         public static final String TO_LONG_OR_BLANK = "参数不符合要求: 太长或为空!";
         public static final String PARAMETERS_ILLEGAL = "参数不符合要求: 必填参数为空或参数有问题!";
         public static final String ALREADY_EXISTED = "参数不符合要求: 已存在!";
-        public static final String NOT_IN_RANGE = "参数不符合要求: 参数不在指定范围!";
+        public static final String NOT_IN_RANGE = "->参数不符合要求: 参数不在指定范围!";
         public static final String FILE_HAS_NO_ORIGINAL_NAME = "参数不符合要求: 上传的文件没有filename字段!";
     }
     public static class ServerError {
@@ -30,7 +30,7 @@ public class MessageConstant {
     public static final String CATEGORY_BE_RELATED_BY_DISH = "当前分类关联了菜品,不能删除";
     public static final String SHOPPING_CART_IS_NULL = "购物车数据为空，不能下单";
     public static final String ADDRESS_BOOK_IS_NULL = "用户地址为空，不能下单";
-    public static final String LOGIN_FAILED = "登录失败";
+    public static final String LOGIN_FAILED = "登录失败!";
     public static final String UPLOAD_FAILED = "文件上传失败";
     public static final String SETMEAL_ENABLE_FAILED = "套餐内包含未启售菜品，无法启售";
     public static final String PASSWORD_EDIT_FAILED = "密码修改失败";

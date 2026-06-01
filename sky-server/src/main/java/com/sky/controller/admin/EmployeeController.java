@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * 员工管理
  */
-@Tag(name = "员工管理",description = "员工相关接口")
+@Tag(name = "员工管理")
 @RestController
 @RequestMapping("/admin/employee")
 @Slf4j

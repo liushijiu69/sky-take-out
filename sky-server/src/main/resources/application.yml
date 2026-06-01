@@ -6,6 +6,13 @@ spring:
     active: dev
   main:
     allow-circular-references: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm
+    time-zone: Asia/Shanghai
+    deserialization:
+      fail-on-unknown-properties: false
+    serialization:
+      write-dates-as-timestamps: false
   datasource:
     driver-class-name: ${sky.datasource.driver-class-name}
     url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
@@ -25,6 +32,22 @@ mybatis:
   configuration:
     #开启驼峰命名
     map-underscore-to-camel-case: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs      # OpenAPI 文档原始路径
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html  # Swagger UI 访问路径（Knife4j 仍使用 /doc.html）
+    enabled: true
+
+knife4j:
+  enable: true              # 开启 Knife4j 增强功能
+  production: false         # 开发环境设为 false；生产环境设为 true 可完全关闭文档
+  setting:
+    language: zh_cn         # 中文界面
+    enableSwaggerModels: true
+    enableDocumentManage: true
 
 logging:
   level:
@@ -46,3 +69,10 @@ sky:
     admin-ttl: 7200000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
+
+    user-secret-key: liushijiu_sky-take-out-project-2026
+    user-ttl: 7200000
+    user-token-name: authentication
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}

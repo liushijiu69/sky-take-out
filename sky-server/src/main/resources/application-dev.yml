@@ -16,3 +16,6 @@ sky:
     bucket-name: sky-take-out-liushijiu
     access-key-id: ${OSS_ACCESS_KEY_ID}
     access-key-secret: ${OSS_ACCESS_KEY_SECRET}
+  wechat:
+    appid: wx3b2cfa4ac5ecc13c
+    secret: 4bbaf6fa6de247d10c0d0beeca8f8a86
