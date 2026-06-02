@@ -13,7 +13,7 @@ interface DishService {
      * @param dish 查询条件（categoryId, status 等）
      * @return 菜品视图对象列表（含口味）
      */
-    fun listWithFlavor(dish: Dish): List<DishVO>
+    fun listWithFlavor(dish: DishDTO): List<DishVO>
 
     fun saveWithFlavor(dishDTO: DishDTO)
     fun pageQuery(dishPageQueryDTO: DishPageQueryDTO): PageResult
@@ -46,5 +46,5 @@ interface DishService {
      * @param categoryId 分类id
      * @return 菜品列表
      */
-    fun listByCategoryId(categoryId: Long): List<Dish>
+    fun listByCategoryId(categoryId: Long): List<DishVO>
 }

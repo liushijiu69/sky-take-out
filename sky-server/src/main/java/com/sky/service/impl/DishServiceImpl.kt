@@ -15,10 +15,15 @@ import com.sky.mapper.SetmealMapper
 import com.sky.result.PageResult
 import com.sky.service.DishService
 import com.sky.vo.DishVO
+import org.redisson.api.RedissonClient
+import org.redisson.api.options.KeysScanOptions
 import org.slf4j.LoggerFactory
 import org.springframework.beans.BeanUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
+
 
 /**
  * 菜品业务实现
@@ -29,6 +34,7 @@ class DishServiceImpl(
     private val dishFlavorsMapper: DishFlavorsMapper,
     private val setmealMapper: SetmealMapper,
     private val categoryMapper: CategoryMapper,
+    private val redissonClient: RedissonClient
 ) : DishService {
     private val log = LoggerFactory.getLogger(DishServiceImpl::class.java)
 
@@ -36,17 +42,27 @@ class DishServiceImpl(
      * 条件查询菜品和口味
      * 查询起售中的菜品，并关联口味数据
      */
-    override fun listWithFlavor(dish: Dish): List<DishVO> {
-        //根据分类id查询菜品列表
-        val dishList = dishMapper.selectByCategoryId(dish.categoryId)
-
-        return dishList.filter { it.status == 1 }.map { d ->
-            DishVO().apply {
-                BeanUtils.copyProperties(d, this)
-                //根据菜品id查询对应的口味
-                flavors = dishFlavorsMapper.selectByDishId(d.id)
-            }
-        }
+    override fun listWithFlavor(dish: DishDTO): List<DishVO> {
+        //构造redis中的key
+        val key = "dish:category:" + dish.categoryId
+        //查询缓存
+        val bucket = redissonClient.getBucket<List<DishVO>>(key)
+        //缓存命中（含空列表标记）直接返回，不查DB
+        bucket.get()?.let { return it }
+        //缓存未命中，查询数据库//根据分类id查询菜品列表
+        val dishVOList = dishMapper.selectByCategoryId(dish.categoryId)
+            //过滤器,保留状态符合(起售中)的菜品
+                .filter { it.status == dish.status }.map { d ->
+                    //构造DishVO
+                    DishVO().apply {
+                        BeanUtils.copyProperties(d, this)
+                        //根据菜品id查询对应的口味
+                        flavors = dishFlavorsMapper.selectByDishId(d.id)
+                    }
+                }
+        //写入缓存（含空列表）
+        bucket.set(dishVOList,60.minutes.toJavaDuration())
+        return dishVOList
     }
 
     /**
@@ -80,6 +96,9 @@ class DishServiceImpl(
 
         // 5. 删除菜品
         dishMapper.deleteByIds(idList)
+
+
+
     }
 
     /**
@@ -152,9 +171,13 @@ class DishServiceImpl(
         // 2. flavors为空 → 跳过（不做任何口味操作）
 
         // 3. 修改dish
-        val dish = Dish()
+        var dish = Dish()
         BeanUtils.copyProperties(dishDTO, dish)
         dishMapper.update(dish)
+        dish = dishMapper.selectById(dishDTO.id)
+        // 清理缓存
+        val key = "dish:category:" + dish.categoryId
+        clearCache(key)
     }
 
     /**
@@ -162,17 +185,29 @@ class DishServiceImpl(
      */
     override fun startOrStop(status: Int, id: Long) {
         // 构造Dish对象并调用已有update方法
-        val dish = Dish()
+        var dish = Dish()
         dish.id = id
         dish.status = status
         dishMapper.update(dish)
+        val categoryId = dishMapper.selectById(id).categoryId
+        // 清理缓存
+        val key = "dish:category:" + categoryId
+        clearCache(key)
     }
 
     /**
      * 根据分类id查询菜品列表
      */
-    override fun listByCategoryId(categoryId: Long): List<Dish> {
-        return dishMapper.selectByCategoryId(categoryId)
+    override fun listByCategoryId(categoryId: Long): List<DishVO> {
+        // 根据分类id查询菜品列表
+        val dishVOList = dishMapper.selectByCategoryId(categoryId).map { d ->
+            DishVO().apply {
+                BeanUtils.copyProperties(d, this)
+                flavors = dishFlavorsMapper.selectByDishId(d.id)
+                categoryName = categoryMapper.selectById(d.categoryId)?.name ?: ""
+            }
+        }
+        return dishVOList
     }
 
     /**
@@ -182,5 +217,16 @@ class DishServiceImpl(
         PageHelper.startPage<DishVO>(dishPageQueryDTO.page, dishPageQueryDTO.pageSize)
         val page = dishMapper.selectByPage(dishPageQueryDTO)
         return PageResult(page.total, page.result)
+    }
+
+    /**
+     * 只在修改和起售停售清理缓存,因为删除方法只有在停售状态才能成功，新增方法默认设置状态停售,停售状态的菜品不会存入缓存,所以不需要清理缓存,
+     */
+    private fun clearCache(pattern: String) {
+        val options: KeysScanOptions? = KeysScanOptions.defaults()
+            .pattern(pattern) // 设置匹配模式
+        redissonClient.keys.getKeys(options).forEach {
+            redissonClient.getBucket<Any>(it).delete()
+        }
     }
 }

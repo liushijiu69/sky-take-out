@@ -1,12 +1,12 @@
 package com.sky.controller.admin
 
+import com.sky.annotation.AutoLog
 import com.sky.constant.MessageConstant
 import com.sky.exception.IllegalException
 import com.sky.result.Result
 import com.sky.utils.AliOssUtil
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -19,12 +19,10 @@ import java.util.*
 class CommonController(
     private val aliOssUtil: AliOssUtil
 ) {
-    private val log = LoggerFactory.getLogger(CommonController::class.java)
-
+    @AutoLog(msg = "文件上传")
     @Operation(summary = "文件上传")
     @PostMapping("/upload")
     fun upload(file: MultipartFile): Result<String> {
-        log.info("文件上传,参数:${file.originalFilename}")
         val objectName = file.let {
             val orgName =
                 it.originalFilename ?: throw IllegalException(MessageConstant.Param.FILE_NO_NAME)

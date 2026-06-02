@@ -1,17 +1,25 @@
 package com.sky.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.redisson.Redisson
 import org.redisson.api.RedissonClient
+import org.redisson.codec.JsonJacksonCodec
 import org.redisson.config.Config
+import org.redisson.spring.cache.RedissonSpringCacheManager
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.CacheManager
+import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.StringRedisSerializer
 
+
 @Configuration
+@EnableCaching
 class RedisAndRedissonConfiguration {
     private val log = LoggerFactory.getLogger(RedisAndRedissonConfiguration::class.java)
 
@@ -37,15 +45,27 @@ class RedisAndRedissonConfiguration {
     fun redissonClient(): RedissonClient {
         log.info("RedissonClient配置->\tredisHost = ${redisHost} \t redisPort = ${redisPort} \t redisDatabase = ${redisDatabase}")
         val config = Config().apply {
-            useSingleServer().apply {
+            this.useSingleServer().apply {
                 address = "redis://${redisHost}:${redisPort}"
                 database = redisDatabase
             }
-            lockWatchdogTimeout = 30000
+            this.lockWatchdogTimeout = 30000
+            // 使用支持 LocalDateTime 的 Jackson 编解码器
+            this.setCodec(JsonJacksonCodec(createObjectMapper()))
         }
         return Redisson.create(config).also{
             log.info("RedissonClient配置完成")
         }
+    }
+
+    private fun createObjectMapper(): ObjectMapper {
+        return ObjectMapper().registerModule(JavaTimeModule())
+    }
+
+    @Bean
+    fun cacheManager(redissonClient: RedissonClient?): CacheManager? {
+        // 将 RedissonClient 注入 CacheManager，Spring Cache 注解就会自动使用 Redisson 作为底层实现[reference:2]
+        return RedissonSpringCacheManager(redissonClient)
     }
 
 }

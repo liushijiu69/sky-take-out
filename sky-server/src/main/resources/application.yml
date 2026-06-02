@@ -49,13 +49,6 @@ knife4j:
     enableSwaggerModels: true
     enableDocumentManage: true
 
-logging:
-  level:
-    com:
-      sky:
-        mapper: debug
-        service: info
-        controller: info
 sky:
   alioss:
     endpoint: ${sky.alioss.endpoint}

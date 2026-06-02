@@ -17,6 +17,8 @@ import com.sky.service.SetmealService
 import com.sky.vo.DishItemVO
 import com.sky.vo.SetmealVO
 import org.springframework.beans.BeanUtils
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -34,6 +36,7 @@ class SetmealServiceImpl(
     /**
      * 条件查询套餐
      */
+    @Cacheable(cacheNames = ["setmealCache"], key = "#setmeal.categoryId")
     override fun list(setmeal: Setmeal): List<Setmeal> {
         return setmealMapper.list(setmeal)
     }
@@ -53,6 +56,7 @@ class SetmealServiceImpl(
      * 4. 将套餐主键赋值给每个setmealDish
      * 5. 批量插入setmeal_dish表
      */
+    @CacheEvict(cacheNames = ["setmealCache"], key = "#setmealDTO.categoryId")
     @Transactional
     override fun saveWithDish(setmealDTO: SetmealDTO) {
         // 1. 校验categoryId是否在category表
@@ -148,6 +152,7 @@ class SetmealServiceImpl(
      * 3. 插入新的setmeal_dish数据
      * 4. 修改setmeal
      */
+    @CacheEvict(cacheNames = ["setmealCache"], allEntries = true)
     @Transactional
     override fun updateWithDish(setmealDTO: SetmealDTO) {
         // 1. 校验categoryId是否在category表
@@ -172,6 +177,7 @@ class SetmealServiceImpl(
      * 套餐起售、停售
      * 构造Setmeal对象并调用已有update方法
      */
+    @CacheEvict(cacheNames = ["setmealCache"], allEntries =  true)
     override fun startOrStop(status: Int, id: Long) {
         val setmeal = Setmeal()
         setmeal.id = id

@@ -1,4 +1,5 @@
 package com.sky.controller.admin
+import com.sky.annotation.AutoLog
 import com.sky.constant.MessageConstant
 import com.sky.constant.ShopConstant
 import com.sky.exception.IllegalException
@@ -6,7 +7,6 @@ import com.sky.result.Result
 import com.sky.service.ShopService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -22,15 +22,15 @@ import org.springframework.web.bind.annotation.RestController
 class ShopController(
     private val shopService: ShopService
 ) {
-    private val log = LoggerFactory.getLogger(ShopController::class.java)
+    @AutoLog(msg = "获取店铺营业状态")
     @Operation(summary = "获取营业状态")
     @GetMapping("/status")
     fun getStatus(): Result<Int>{
-        log.info("获取店铺营业状态")
         val status : Int =  shopService.getStatus()
         return Result.success(status)
     }
 
+    @AutoLog(msg = "设置店铺营业状态")
     @Operation(summary = "设置营业状态")
     @PutMapping("/{status}")
     fun setStatus(@PathVariable status: Int): Result<String> {
@@ -41,7 +41,6 @@ class ShopController(
                         + status
                         + MessageConstant.Param.NOT_IN_RANGE)
         }
-        log.info("设置店铺的营业状态: ${if(status == ShopConstant.Status.OPEN.code) "营业中" else "打烊中"}")
         // 执行业务
         shopService.setStatus(status)
         //返回结果

@@ -47,7 +47,6 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler
     public Result exceptionHandler(Exception ex){
-        log.error("系统异常：{}", ex.getMessage());
         log.error(ex.getMessage(), ex);
         return Result.error(MessageConstant.Server.ERROR);
     }

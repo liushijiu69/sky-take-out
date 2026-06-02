@@ -1,5 +1,6 @@
 package com.sky.controller.admin;
 
+import com.sky.annotation.AutoLog;
 import com.sky.constant.EmployeeConstant;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.constant.MessageConstant;
@@ -18,7 +19,6 @@ import com.sky.vo.EmployeeLoginVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +33,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin/employee")
 @Validated
-@Slf4j
 public class EmployeeController {
 
     @Autowired
@@ -44,11 +43,10 @@ public class EmployeeController {
     /**
      * 登录
      */
+    @AutoLog(msg = "员工登录")
     @Operation(summary = "员工登录")
     @PostMapping("/login")
     public Result<EmployeeLoginVO> login(@Valid @RequestBody EmployeeLoginDTO employeeLoginDTO) {
-        log.info("员工登录,参数为：{}", employeeLoginDTO);
-
         Employee employee = employeeService.login(employeeLoginDTO);
 
         //登录成功后，生成jwt令牌
@@ -72,20 +70,20 @@ public class EmployeeController {
     /**
      * 退出
      */
+    @AutoLog(msg = "员工退出登录")
     @Operation(summary = "员工退出登录")
     @PostMapping("/logout")
     public Result<String> logout() {
-        log.info("员工退出登录");
         return Result.success();
     }
 
     /**
      * 新增员工
      */
+    @AutoLog(msg = "新增员工")
     @Operation(summary = "新增员工")
     @PostMapping
     public Result<String> postEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
-        log.info("新增员工,参数为: {}", employeeDTO);
         employeeService.saveEmployee(employeeDTO);
         return Result.success();
     }
@@ -93,10 +91,10 @@ public class EmployeeController {
     /**
      * 员工分页查询
      */
+    @AutoLog(msg = "员工分页查询")
     @Operation(summary = "员工分页查询")
     @GetMapping("/page")
     public Result<PageResult> getEmployeesPage(@Valid EmployeePageQueryDTO empPageQueryDTO) {
-        log.info("员工分页查询,参数为: {}", empPageQueryDTO);
         PageResult pageResult = employeeService.queryEmployeeByPage(empPageQueryDTO);
         return Result.success(pageResult);
     }
@@ -104,6 +102,7 @@ public class EmployeeController {
     /**
      * 启用或禁用员工账号
      */
+    @AutoLog(msg = "启用或禁用员工")
     @Operation(summary = "启用或禁用员工")
     @PostMapping("/status/{status}")
     public Result<String> postEmployeeAccountStatus(@PathVariable Integer status, @RequestParam Long id) {
@@ -111,7 +110,6 @@ public class EmployeeController {
         if (!EmployeeConstant.Status.contains(status)) {
             throw new IllegalException(EmployeeConstant.STATUS + status + MessageConstant.Param.NOT_IN_RANGE);
         }
-        log.info("启用或禁用员工,参数为: status:{},id:{}", status, id);
         employeeService.startOrStopEmpAccount(status, id);
         return Result.success();
     }
@@ -119,6 +117,7 @@ public class EmployeeController {
     /**
      * 修改员工信息
      */
+    @AutoLog(msg = "修改员工")
     @Operation(summary = "修改员工")
     @PutMapping
     public Result<String> putEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
@@ -126,7 +125,6 @@ public class EmployeeController {
         if (employeeDTO.getId() == null) {
             throw new IllegalException(MessageConstant.Param.REQUIRED);
         }
-        log.info("修改员工,参数为: {}", employeeDTO);
         employeeService.updateEmployee(employeeDTO);
         return Result.success();
     }
@@ -134,10 +132,10 @@ public class EmployeeController {
     /**
      * 根据id查询员工
      */
+    @AutoLog(msg = "根据id查询员工")
     @Operation(summary = "根据id查询员工")
     @GetMapping("/{id}")
     public Result<EmployeeVO> getEmployeeById(@PathVariable Long id) {
-        log.info("根据id查询员工,id: {}", id);
         EmployeeVO employeeVO = employeeService.getById(id);
         return Result.success(employeeVO);
     }

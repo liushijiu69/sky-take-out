@@ -38,7 +38,7 @@ class JwtTokenUserInterceptor(
             val claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token)
             val userId = claims.get(JwtClaimsConstant.USER_ID).toString().toLong()
             BaseContext.setCurrentId(userId)
-            log.info("当前员工id：{}", userId)
+            log.info("当前用户id：{}", userId)
             //3、通过，放行
             return true
         } catch (ex: Exception) {
