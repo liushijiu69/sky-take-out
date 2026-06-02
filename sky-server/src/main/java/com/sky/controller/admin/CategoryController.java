@@ -1,13 +1,17 @@
 package com.sky.controller.admin;
 
+import com.sky.constant.CategoryConstant;
+import com.sky.constant.MessageConstant;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
+import com.sky.exception.IllegalException;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +31,25 @@ public class CategoryController {
 
     /**
      * 新增分类
-     * @param categoryDTO
-     * @return
      */
     @PostMapping
     @Operation(summary = "新增分类")
-    public Result<String> save(@RequestBody CategoryDTO categoryDTO){
+    public Result<String> save(@Valid @RequestBody CategoryDTO categoryDTO){
+        //校验分类名称
+        if (categoryDTO.getName() == null || categoryDTO.getName().isEmpty()) {
+            throw new IllegalException(CategoryConstant.NAME + MessageConstant.Param.TOO_LONG_OR_BLANK);
+        }
+        if (categoryDTO.getName().length() > 32) {
+            throw new IllegalException(CategoryConstant.NAME + MessageConstant.Param.TOO_LONG_OR_BLANK);
+        }
+        //校验分类类型(1菜品分类 2套餐分类)
+        if (categoryDTO.getType() == null || !CategoryConstant.Type.contains(categoryDTO.getType())) {
+            throw new IllegalException(CategoryConstant.TYPE + MessageConstant.Param.NOT_IN_RANGE);
+        }
+        //校验排序字段
+        if (categoryDTO.getSort() == null || categoryDTO.getSort() < 0) {
+            throw new IllegalException(CategoryConstant.SORT + MessageConstant.Param.NOT_IN_RANGE);
+        }
         log.info("新增分类：{}", categoryDTO);
         categoryService.save(categoryDTO);
         return Result.success();
@@ -40,12 +57,10 @@ public class CategoryController {
 
     /**
      * 分类分页查询
-     * @param categoryPageQueryDTO
-     * @return
      */
     @GetMapping("/page")
     @Operation(summary = "分类分页查询")
-    public Result<PageResult> page(CategoryPageQueryDTO categoryPageQueryDTO){
+    public Result<PageResult> page(@Valid CategoryPageQueryDTO categoryPageQueryDTO){
         log.info("分页查询：{}", categoryPageQueryDTO);
         PageResult pageResult = categoryService.pageQuery(categoryPageQueryDTO);
         return Result.success(pageResult);
@@ -53,8 +68,6 @@ public class CategoryController {
 
     /**
      * 删除分类
-     * @param id
-     * @return
      */
     @DeleteMapping
     @Operation(summary = "删除分类")
@@ -66,12 +79,14 @@ public class CategoryController {
 
     /**
      * 修改分类
-     * @param categoryDTO
-     * @return
      */
     @PutMapping
     @Operation(summary = "修改分类")
-    public Result<String> update(@RequestBody CategoryDTO categoryDTO){
+    public Result<String> update(@Valid @RequestBody CategoryDTO categoryDTO){
+        //校验必填参数（id在save时不需要，在update时必须）
+        if (categoryDTO.getId() == null) {
+            throw new IllegalException(MessageConstant.Param.REQUIRED);
+        }
         log.info("修改分类：{}", categoryDTO);
         categoryService.update(categoryDTO);
         return Result.success();
@@ -79,25 +94,30 @@ public class CategoryController {
 
     /**
      * 启用、禁用分类
-     * @param status
-     * @param id
-     * @return
      */
     @PostMapping("/status/{status}")
     @Operation(summary = "启用禁用分类")
     public Result<String> startOrStop(@PathVariable("status") Integer status, @RequestParam Long id){
-        categoryService.startOrStop(status,id);
+        //校验状态值是否合法(0禁用 1启用)
+        if (!CategoryConstant.Status.contains(status)) {
+            throw new IllegalException(CategoryConstant.STATUS + status + MessageConstant.Param.NOT_IN_RANGE);
+        }
+        log.info("启用禁用分类,status:{},id:{}", status, id);
+        categoryService.startOrStop(status, id);
         return Result.success();
     }
 
     /**
      * 根据类型查询分类
-     * @param type
-     * @return
      */
     @GetMapping("/list")
     @Operation(summary = "根据类型查询分类")
     public Result<List<Category>> list(@RequestParam(required = false) Integer type){
+        //校验分类类型(1菜品分类 2套餐分类)
+        if (type != null && !CategoryConstant.Type.contains(type)) {
+            throw new IllegalException(CategoryConstant.TYPE + MessageConstant.Param.NOT_IN_RANGE);
+        }
+        log.info("根据类型查询分类,type:{}", type);
         List<Category> list = categoryService.list(type);
         return Result.success(list);
     }

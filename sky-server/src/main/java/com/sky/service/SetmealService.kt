@@ -2,13 +2,30 @@ package com.sky.service
 
 import com.sky.dto.SetmealDTO
 import com.sky.dto.SetmealPageQueryDTO
+import com.sky.entity.Setmeal
 import com.sky.result.PageResult
+import com.sky.vo.DishItemVO
 import com.sky.vo.SetmealVO
 
 /**
  * 套餐 Service 接口
  */
 interface SetmealService {
+
+    /**
+     * 条件查询套餐
+     * @param setmeal 查询条件（categoryId, status 等）
+     * @return 套餐列表
+     */
+    fun list(setmeal: Setmeal): List<Setmeal>
+
+    /**
+     * 根据id查询菜品选项
+     * @param id 套餐id
+     * @return 菜品选项列表
+     */
+    fun getDishItemById(id: Long): List<DishItemVO>
+
 
     /**
      * 新增套餐（含关联菜品）

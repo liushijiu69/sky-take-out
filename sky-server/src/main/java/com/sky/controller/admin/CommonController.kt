@@ -27,12 +27,12 @@ class CommonController(
         log.info("文件上传,参数:${file.originalFilename}")
         val objectName = file.let {
             val orgName =
-                it.originalFilename ?: throw IllegalException(MessageConstant.ParamIllegal.FILE_HAS_NO_ORIGINAL_NAME)
+                it.originalFilename ?: throw IllegalException(MessageConstant.Param.FILE_NO_NAME)
             var extension = orgName.substringAfterLast('.')
             extension = if (extension == orgName) ".unknown" else ".${extension}"
             UUID.randomUUID().toString() + extension//返回拼接后的文件名:
         }
-        val filePath = aliOssUtil.upload(file.bytes, objectName) ?: return Result.error(MessageConstant.ServerError.File_UPLOAD_ERROR)
+        val filePath = aliOssUtil.upload(file.bytes, objectName) ?: return Result.error(MessageConstant.Server.UPLOAD_FAILED)
         return Result.success(filePath)
     }
 }

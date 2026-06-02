@@ -1,5 +1,7 @@
 package com.sky.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,13 +12,14 @@ import java.io.Serializable;
 @Data
 public class EmployeePageQueryDTO implements Serializable {
 
-    //员工姓名
     private String name;
 
-    //页码
+    @NotNull
+    @Min(1)
     private Integer page;
 
-    //每页显示记录数
+    @NotNull
+    @Min(0)
     private Integer pageSize;
 
 }

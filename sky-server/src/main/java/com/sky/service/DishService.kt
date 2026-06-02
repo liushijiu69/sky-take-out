@@ -7,6 +7,14 @@ import com.sky.result.PageResult
 import com.sky.vo.DishVO
 
 interface DishService {
+
+    /**
+     * 条件查询菜品和口味
+     * @param dish 查询条件（categoryId, status 等）
+     * @return 菜品视图对象列表（含口味）
+     */
+    fun listWithFlavor(dish: Dish): List<DishVO>
+
     fun saveWithFlavor(dishDTO: DishDTO)
     fun pageQuery(dishPageQueryDTO: DishPageQueryDTO): PageResult
     /**

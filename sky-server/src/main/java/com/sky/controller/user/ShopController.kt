@@ -1,6 +1,5 @@
 package com.sky.controller.user
 
-import com.sky.constant.ShopConstant
 import com.sky.result.Result
 import com.sky.service.ShopService
 import io.swagger.v3.oas.annotations.Operation
@@ -24,8 +23,8 @@ class ShopController(
     @Operation(summary = "获取营业状态")
     @GetMapping("/status")
     fun getStatus(): Result<Int> {
+        log.info("C端获取店铺营业状态")
         val status = shopService.getStatus()
-        log.info("C端获取店铺营业状态: ${if (status == ShopConstant.Status.OPEN.code) "营业中" else "打烊中"}")
         return Result.success(status)
     }
 }

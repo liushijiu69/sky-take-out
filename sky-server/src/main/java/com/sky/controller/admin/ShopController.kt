@@ -26,9 +26,8 @@ class ShopController(
     @Operation(summary = "获取营业状态")
     @GetMapping("/status")
     fun getStatus(): Result<Int>{
-        // 执行业务
+        log.info("获取店铺营业状态")
         val status : Int =  shopService.getStatus()
-        log.info("获取店铺营业状态: ${if (status == ShopConstant.Status.OPEN.code) "营业中" else "打烊中"}")
         return Result.success(status)
     }
 
@@ -40,7 +39,7 @@ class ShopController(
             if (!ShopConstant.Status.contains(it))
                 throw IllegalException(ShopConstant.STATUS
                         + status
-                        + MessageConstant.ParamIllegal.NOT_IN_RANGE)
+                        + MessageConstant.Param.NOT_IN_RANGE)
         }
         log.info("设置店铺的营业状态: ${if(status == ShopConstant.Status.OPEN.code) "营业中" else "打烊中"}")
         // 执行业务
