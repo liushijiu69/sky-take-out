@@ -30,6 +30,9 @@ class AutoLogAspect {
             val result = joinPoint.proceed()//执行方法
             val duration = System.currentTimeMillis() - start//耗时
             logger.info("{} -> 执行结束,耗时:{}ms,返回:{}", msg, duration, result)
+            if (duration > 1000) {
+                logger.warn("{} -> 方法{}执行耗时较长,耗时:{}ms,请检查是否有性能问题", msg, signature,duration)
+            }
             return result//返回结果
         } catch (ex: Throwable) {
             val duration = System.currentTimeMillis() - start//耗时

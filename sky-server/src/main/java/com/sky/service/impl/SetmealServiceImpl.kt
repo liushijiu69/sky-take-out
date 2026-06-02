@@ -36,7 +36,7 @@ class SetmealServiceImpl(
     /**
      * 条件查询套餐
      */
-    @Cacheable(cacheNames = ["setmealCache"], key = "#setmeal.categoryId")
+    @Cacheable(cacheNames = ["setmealCache:30"], key = "#setmeal.categoryId")
     override fun list(setmeal: Setmeal): List<Setmeal> {
         return setmealMapper.list(setmeal)
     }
@@ -178,6 +178,7 @@ class SetmealServiceImpl(
      * 构造Setmeal对象并调用已有update方法
      */
     @CacheEvict(cacheNames = ["setmealCache"], allEntries =  true)
+    @Transactional
     override fun startOrStop(status: Int, id: Long) {
         val setmeal = Setmeal()
         setmeal.id = id

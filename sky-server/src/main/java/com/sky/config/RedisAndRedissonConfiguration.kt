@@ -6,13 +6,14 @@ import org.redisson.Redisson
 import org.redisson.api.RedissonClient
 import org.redisson.codec.JsonJacksonCodec
 import org.redisson.config.Config
-import org.redisson.spring.cache.RedissonSpringCacheManager
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.redis.cache.RedisCacheConfiguration
+import org.springframework.data.redis.cache.RedisCacheWriter
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.StringRedisSerializer
@@ -63,9 +64,11 @@ class RedisAndRedissonConfiguration {
     }
 
     @Bean
-    fun cacheManager(redissonClient: RedissonClient?): CacheManager? {
-        // 将 RedissonClient 注入 CacheManager，Spring Cache 注解就会自动使用 Redisson 作为底层实现[reference:2]
-        return RedissonSpringCacheManager(redissonClient)
+    fun cacheManager(redisConnectionFactory: RedisConnectionFactory): CacheManager {
+        val cacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory)
+        val defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
+        return CustomRedisCacheManager(cacheWriter, defaultConfig)
     }
+
 
 }

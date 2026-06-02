@@ -9,6 +9,7 @@ public class MessageConstant {
     public static class Param {
         public static final String TOO_LONG_OR_BLANK = "参数不符合要求: 太长或为空!";
         public static final String REQUIRED = "参数不符合要求: 必填参数为空或参数有问题!";
+        public static final String ILLEGAL = "参数不符合要求: 非法参数!";
         public static final String ALREADY_EXISTS = "参数不符合要求: 已存在!";
         public static final String NOT_IN_RANGE = "->参数不符合要求: 参数不在指定范围!";
         public static final String FILE_NO_NAME = "参数不符合要求: 上传的文件没有filename字段!";
