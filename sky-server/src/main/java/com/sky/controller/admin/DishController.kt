@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController
  * 菜品管理 Controller
  */
 @Tag(name = "菜品相关接口")
-@RestController
+@RestController("adminDishController")
 @RequestMapping("/admin/dish")
 @Validated
 class DishController(

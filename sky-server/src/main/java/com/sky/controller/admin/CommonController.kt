@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 @Tag(name = "通用接口")
-@RestController
+@RestController("adminCommonController")
 @RequestMapping("/admin/common")
 class CommonController(
     private val aliOssUtil: AliOssUtil

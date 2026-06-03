@@ -2,7 +2,9 @@ package com.sky.controller.user;
 
 import com.sky.annotation.AutoLog;
 import com.sky.constant.DishConstant;
+import com.sky.constant.MessageConstant;
 import com.sky.dto.DishDTO;
+import com.sky.exception.IllegalException;
 import com.sky.result.Result;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
@@ -33,6 +35,9 @@ public class DishController {
     @GetMapping("/list")
     @Operation(summary = "根据分类id查询菜品")
     public Result<List<DishVO>> list(Long categoryId) {
+        if (categoryId == null) {
+            throw new IllegalException(MessageConstant.Param.REQUIRED);
+        }
         DishDTO dishDTO = new DishDTO();
         dishDTO.setCategoryId(categoryId);
         dishDTO.setStatus(DishConstant.DishStatus.ON_SALE.getCode());

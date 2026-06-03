@@ -4,6 +4,8 @@ import com.sky.annotation.AutoFill;
 import com.sky.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.jetbrains.annotations.NotNull;
+
 @Mapper
 public interface UserMapper {
     /**
@@ -15,4 +17,6 @@ public interface UserMapper {
      */
 
     void insert(User user);
+
+    User selectById(Long userId);
 }

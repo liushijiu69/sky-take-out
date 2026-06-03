@@ -11,6 +11,8 @@
         set number = #{number}
         where id = #{id}
     </update>
+
+
     <delete id="delete">
         delete from shopping_cart
         <where>

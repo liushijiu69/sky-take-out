@@ -1,8 +1,10 @@
 package com.sky.controller.user;
 
 import com.sky.annotation.AutoLog;
+import com.sky.constant.MessageConstant;
 import com.sky.constant.SetmealConstant;
 import com.sky.entity.Setmeal;
+import com.sky.exception.IllegalException;
 import com.sky.result.Result;
 import com.sky.service.SetmealService;
 import com.sky.vo.DishItemVO;
@@ -34,6 +36,9 @@ public class SetmealController {
     @GetMapping("/list")
     @Operation(summary = "根据分类id查询套餐")
     public Result<List<Setmeal>> list(Long categoryId) {
+        if (categoryId == null) {
+            throw new IllegalException(MessageConstant.Param.REQUIRED);
+        }
         Setmeal setmeal = new Setmeal();
         setmeal.setCategoryId(categoryId);
         setmeal.setStatus(SetmealConstant.SetmealStatus.ON_SALE.getCode());
@@ -49,6 +54,9 @@ public class SetmealController {
     @GetMapping("/dish/{id}")
     @Operation(summary = "根据套餐id查询包含的菜品列表")
     public Result<List<DishItemVO>> dishList(@PathVariable("id") Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalException(MessageConstant.Param.ILLEGAL);
+        }
         List<DishItemVO> list = setmealService.getDishItemById(id);
         return Result.success(list);
     }

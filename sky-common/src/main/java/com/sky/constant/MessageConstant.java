@@ -11,7 +11,7 @@ public class MessageConstant {
         public static final String REQUIRED = "参数不符合要求: 必填参数为空或参数有问题!";
         public static final String ILLEGAL = "参数不符合要求: 非法参数!";
         public static final String ALREADY_EXISTS = "参数不符合要求: 已存在!";
-        public static final String NOT_IN_RANGE = "->参数不符合要求: 参数不在指定范围!";
+        public static final String NOT_IN_RANGE = "参数不符合要求: 参数不在指定范围!";
         public static final String FILE_NO_NAME = "参数不符合要求: 上传的文件没有filename字段!";
     }
 
@@ -21,6 +21,11 @@ public class MessageConstant {
         public static final String ERROR = "服务器异常!";
         public static final String UNKNOWN = "未知错误";
         public static final String UPLOAD_FAILED = "文件上传失败";
+    }
+
+    public static class Data {
+        public static final String NOT_FOUND = "数据不存在!";
+        public static final String ALREADY_EXISTS = "数据重复!";
     }
 
     /** 员工模块 */
@@ -61,5 +66,8 @@ public class MessageConstant {
     public static class Login {
         public static final String FAILED = "登录失败!";
         public static final String PASSWORD_EDIT_FAILED = "密码修改失败";
+        public static final String USER_NOT_FOUND = "用户不存在!";
     }
+
+
 }

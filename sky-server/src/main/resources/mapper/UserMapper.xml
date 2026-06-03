@@ -11,4 +11,9 @@
     <select id="getByOpenid" resultType="com.sky.entity.User">
         select id, openid, name, phone, sex, id_number, avatar, create_time from user where openid = #{openid}
     </select>
+    <select id="selectById" resultType="com.sky.entity.User">
+        select id, openid, name, phone, sex, id_number, avatar, create_time
+        from user
+        where id = #{id}
+    </select>
 </mapper>

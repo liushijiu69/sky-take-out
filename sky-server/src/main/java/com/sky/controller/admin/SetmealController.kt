@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController
  * 套餐管理 Controller
  */
 @Tag(name = "套餐相关接口")
-@RestController
+@RestController("adminSetmealController")
 @RequestMapping("/admin/setmeal")
 @Validated
 class SetmealController(

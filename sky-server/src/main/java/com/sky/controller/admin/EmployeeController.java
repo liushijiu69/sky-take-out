@@ -30,7 +30,7 @@ import java.util.Map;
  * 员工管理
  */
 @Tag(name = "员工管理")
-@RestController
+@RestController("adminEmployeeController")
 @RequestMapping("/admin/employee")
 @Validated
 public class EmployeeController {

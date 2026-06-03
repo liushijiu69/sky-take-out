@@ -25,4 +25,5 @@ class ShopController(
         val status = shopService.getStatus()
         return Result.success(status)
     }
+
 }

@@ -1,8 +1,10 @@
 package com.sky.service.impl
 
+import com.sky.constant.MessageConstant
 import com.sky.context.BaseContext
 import com.sky.dto.ShoppingCartDTO
 import com.sky.entity.ShoppingCart
+import com.sky.exception.IllegalException
 import com.sky.mapper.DishMapper
 import com.sky.mapper.SetmealMapper
 import com.sky.mapper.ShoppingCartMapper
@@ -84,12 +86,24 @@ class ShoppingCartServiceImpl(
     }
     @CacheEvict(cacheNames = ["shoppingCartCache"], allEntries = true)
     override fun deleteShoppingCart(shoppingCartDTO: ShoppingCartDTO) {
-        val shoppingCart = ShoppingCart().apply {
+        var shoppingCart = ShoppingCart().apply {
             userId = BaseContext.getCurrentId()
             dishFlavor = shoppingCartDTO.dishFlavor
             dishId = shoppingCartDTO.dishId
             setmealId = shoppingCartDTO.setmealId
         }
-        shoppingCartMapper.delete(shoppingCart)
+        //判断当前购物车数据是否存在
+        shoppingCart = shoppingCartMapper.selectByShoppingCart(shoppingCart)?.firstOrNull()
+            ?: throw IllegalException(MessageConstant.Data.NOT_FOUND)// 不存在则抛出业务异常
+        //如果存在,将数量减一
+        shoppingCart.apply {
+            number -= 1
+        }.also {
+            if (it.number <= 0) {//如果数量为0,则从数据库中删除该购物车数据
+                shoppingCartMapper.delete(it)
+            } else {//否则,更新数据库
+                shoppingCartMapper.updateNumberById(shoppingCart)
+            }
+        }
     }
 }

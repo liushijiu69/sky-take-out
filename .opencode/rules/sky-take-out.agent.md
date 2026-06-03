@@ -54,7 +54,7 @@ Service(出参 VO) → Controller → 前端 JSON
 |------|------------|
 | Spring Boot | 3.2.5（Jakarta EE） |
 | Java | 17 |
-| Kotlin | 2.3.10（与 Java 混用，统一放在 `src/main/java`） |
+| Kotlin | 2.3.10（与 Java 混用，统一放在 `src/main/java`，仅手写新代码时用 Kotlin，已有 Java 代码不做 Kotlin 转换） |
 | ORM | MyBatis + PageHelper |
 | 构建 | Maven 多模块（sky-common / sky-pojo / sky-server） |
 | 接口文档 | Knife4j 4.5.0（SpringDoc OpenAPI v3） |
@@ -81,9 +81,8 @@ Service(出参 VO) → Controller → 前端 JSON
 - 类标记 `@Tag(name = "中文模块名")` + `@RestController` + `@RequestMapping("/模块")`
 - 每个方法标记 `@Operation(summary = "中文描述")`
 - 方法命名：`save`(POST)、`pageQuery`(GET)、`update`(PUT)、`deleteById`(DELETE)、`startOrStop`(POST)
-- 参数校验：`@Valid` DTO + 可选的 `@Validated` 类级别 + 手动 if-check
-- 调用 Service 前 `log.info("操作描述,参数:{}", param)` 记录日志
-- 日志：Java 用 `@Slf4j`，Kotlin 用 `LoggerFactory.getLogger(XxxController::class.java)`
+- 参数校验：手动 if-check（不依赖 `@Valid`/`@Validated`，每个接口按需校验，避免同一 DTO 在不同接口约束不一致的问题），不符合时抛 `IllegalException`
+- 日志：使用 `@AutoLog(msg = "中文描述")` 注解由 AOP 统一记录，Controller 中不保留 `log.info(...)` 和 Logger 字段
 - 返回类型：始终是 `Result<T>`（统一包装，code / msg / data）
 - 返回格式：无数据返回写 `Result.success()`，查询返回写 `Result.success(data)`，分页写 `Result.success(PageResult)`
 
