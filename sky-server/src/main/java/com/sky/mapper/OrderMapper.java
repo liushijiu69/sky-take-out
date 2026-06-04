@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -25,4 +26,9 @@ public interface OrderMapper {
     void update(Orders orders);
 
     List<Orders> pageQueryByUserId(@Param("userId") Long userId, @Param("status") Integer status);
+
+    List<Orders> pageQueryByCondition(OrdersPageQueryDTO dto);
+
+    @Select("select count(*) from orders where status = #{status}")
+    Integer countByStatus(Integer status);
 }

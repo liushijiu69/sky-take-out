@@ -1,9 +1,7 @@
 package com.sky.mapper;
 
 import com.sky.entity.ShoppingCart;
-import kotlin.Unit;
 import org.apache.ibatis.annotations.Mapper;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -11,10 +9,11 @@ import java.util.List;
 public interface ShoppingCartMapper {
     List<ShoppingCart> selectByShoppingCart(ShoppingCart shoppingCart);
 
-    void updateNumberById( ShoppingCart shoppingCart);
+    void updateNumberById(ShoppingCart shoppingCart);
 
     void insert(ShoppingCart shoppingCart);
 
+    void insertBatch(List<ShoppingCart> shoppingCartList);
 
     void delete(ShoppingCart shoppingCart);
 

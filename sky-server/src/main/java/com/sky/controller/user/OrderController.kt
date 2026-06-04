@@ -3,6 +3,7 @@ package com.sky.controller.user
 import com.sky.annotation.AutoLog
 import com.sky.constant.MessageConstant
 import com.sky.constant.OrderConstant
+import com.sky.context.BaseContext
 import com.sky.dto.OrdersPaymentDTO
 import com.sky.dto.OrdersSubmitDTO
 import com.sky.exception.IllegalException
@@ -35,7 +36,8 @@ class OrderController(
             if (!OrderConstant.TablewareStatus.contains(tablewareStatus))
                 throw IllegalException(MessageConstant.Param.NOT_IN_RANGE)
         }
-        val orderSubmitVO = orderService.submitOrder(ordersSubmitDTO)
+        val userId = BaseContext.getCurrentId()
+        val orderSubmitVO = orderService.submitOrder(ordersSubmitDTO,userId)
         return Result.success(orderSubmitVO)
     }
 
@@ -55,6 +57,22 @@ class OrderController(
         return Result.success(orderPaymentVO)
     }
 
+    @AutoLog(msg = "取消订单")
+    @Operation(summary = "取消订单")
+    @PutMapping("/cancel/{id}")
+    fun cancel(@PathVariable id: Long): Result<String> {
+        orderService.cancelOrder(id)
+        return Result.success()
+    }
+
+    @AutoLog(msg = "再来一单")
+    @Operation(summary = "再来一单")
+    @PostMapping("/repetition/{id}")
+    fun repetition(@PathVariable id: Long): Result<String> {
+        orderService.repetition(id)
+        return Result.success()
+    }
+
     @AutoLog(msg = "历史订单查询")
     @Operation(summary = "历史订单查询")
     @GetMapping("/historyOrders")
@@ -63,10 +81,9 @@ class OrderController(
         @RequestParam pageSize: Int,
         @RequestParam(required = false) status: Int?,
     ): Result<PageResult> {
-        if (page < 1 || pageSize < 1) {
-            throw IllegalException(MessageConstant.Param.NOT_IN_RANGE)
-        }
-        val pageResult = orderService.historyOrders(page, pageSize, status)
+        if (page < 1 || pageSize < 1) {throw IllegalException(MessageConstant.Param.NOT_IN_RANGE)}
+        val userId = BaseContext.getCurrentId()// 获取当前用户
+        val pageResult = orderService.historyOrders(page, pageSize, status,userId)
         return Result.success(pageResult)
     }
 }
