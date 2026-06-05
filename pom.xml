@@ -32,6 +32,7 @@
         <poi>5.2.5</poi>
         <redisson>3.37.0</redisson>
         <hutool>5.8.32</hutool>
+        <kotlinx.coroutines>1.9.0</kotlinx.coroutines>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -131,6 +132,18 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool}</version>
+            </dependency>
+
+            <!-- kotlinx coroutines -->
+            <dependency>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kotlinx-coroutines-core</artifactId>
+                <version>${kotlinx.coroutines}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kotlinx-coroutines-reactor</artifactId>
+                <version>${kotlinx.coroutines}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

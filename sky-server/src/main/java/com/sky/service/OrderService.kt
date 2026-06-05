@@ -27,6 +27,8 @@ interface OrderService {
 
     fun repetition(id: Long)
 
+    fun reminder(id: Long)
+
     fun conditionSearch(ordersPageQueryDTO: OrdersPageQueryDTO): PageResult
 
     fun statistics(): OrderStatisticsVO

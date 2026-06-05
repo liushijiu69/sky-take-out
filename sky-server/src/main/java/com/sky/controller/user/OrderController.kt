@@ -73,6 +73,14 @@ class OrderController(
         return Result.success()
     }
 
+    @AutoLog(msg = "用户催单")
+    @Operation(summary = "用户催单")
+    @GetMapping("/reminder/{id}")
+    fun reminder(@PathVariable id: Long): Result<String> {
+        orderService.reminder(id)
+        return Result.success()
+    }
+
     @AutoLog(msg = "历史订单查询")
     @Operation(summary = "历史订单查询")
     @GetMapping("/historyOrders")

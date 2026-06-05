@@ -21,9 +21,18 @@ public interface OrderMapper {
             "estimated_delivery_time, delivery_status, delivery_time, " +
             "pack_amount, tableware_number, tableware_status " +
             "from orders where number = #{orderNumber}")
-    Orders getByNumber(String orderNumber);
+    Orders selectByNumber(String orderNumber);
 
     void update(Orders orders);
+
+    /**
+     * 通过订单号和订单状态更新订单
+     * @param number 订单号
+     * @param order 订单信息
+     * @param status 订单状态
+     * @return 影响的行数，0 表示未匹配到订单（无需处理）
+     */
+    Integer updateByNumberAndStatus(@Param("orderNumber") String number, @Param("status") Integer status, @Param("order") Orders order);
 
     List<Orders> pageQueryByUserId(@Param("userId") Long userId, @Param("status") Integer status);
 
